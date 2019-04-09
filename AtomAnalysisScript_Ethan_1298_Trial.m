@@ -84,9 +84,9 @@ RefinedPositions = ColumnID(Positions);
 % 3) and 5) Initial guess for Gaussian standard deviations: About a quarter
 % of the full width of the atomic column in pixels on the image. 
 % 6) Initial Guess for Angle of rotation - 0. 
-Guess1 = [            6,   0,  5,   0,  5,     0];
-lb1 = [               0, -10,  1, -10,  1, -pi/4];
-ub1 = [max(max(ZImage)),  10, 15,  10, 15,  pi/4];
+Guess1 = [            6,   0,  5,   0,  5,     0,  5];
+lb1 = [               0, -10,  1, -10,  1, -pi/4, -5];
+ub1 = [max(max(ZImage)),  10, 15,  10, 15,  pi/4, 10];
 
 % Secondly, the user should enter a noise level and a "Rose Criterion" 
 % The noise level is used to determine the error bars on integrated intensity. 
@@ -139,15 +139,15 @@ plot_gausspositions(ZImage, RefinedProjPeaksGauss);
 
 % Initial Guesses, lower bounds, and upper bounds for Gaussian fit. (See
 % previous section for details, as these should be somewhat similar). Note
-% that amplitude in individual frames should be smaller than for summed
-% image. 
-Guess2 = [                  0.6,   0,  5,   0,  5,     0];
-lb2 = [                       0, -10,  1, -10,  1, -pi/4];
-ub2 = [max(max((Image(:,:,1)))),  10, 15,  10, 15,  pi/4];
+% that the background level, and the amplitude of the Gaussians in
+% individual frames should be smaller than for summed image. 
+Guess2 = [                  0.6,   0,  5,   0,  5,     0,  0.5];
+lb2 = [                       0, -10,  1, -10,  1, -pi/4, -0.5];
+ub2 = [max(max((Image(:,:,1)))),  10, 12,  10, 12,  pi/4,  1.5];
 
 % Noise level and Rose Criterion. See above for details. 
 Noise2=0.095; % Measured as standard deviation in vacuum for an individual frame. 
-RoseCriterion2 = 2;
+RoseCriterion2 = 3;
 
 % Now for the calculation. 
 % Code should read: [PeaksGauss, RefinedPeaksGauss] = ColumnFinderSeries(Image, ProjPeaksGauss, W1, Guess, lb, ub, Noise, RoseCriterion); 
@@ -178,7 +178,8 @@ RoseCriterion2 = 2;
 % %    additional 10th column contains the frame number associated with each
 % %    data point. 
 
-[PeaksGauss, RefinedPeaksGauss] = ColumnFinderSeries(Image, ProjPeaksGauss, 40, Guess2, lb2, ub2, Noise2, RoseCriterion2); 
+[PeaksGauss, RefinedPeaksGauss] = ColumnFinderSeries(Image, ProjPeaksGauss, 50, Guess2, lb2, ub2, Noise2, RoseCriterion2); 
+plot_gaussintensity(Image(:,:,10),PeaksGauss(:,:,10));
 
 
 %% 5) Calculate root mean squared displacement (standard deviation) and make plot

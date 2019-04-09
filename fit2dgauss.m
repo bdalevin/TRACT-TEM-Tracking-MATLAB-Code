@@ -33,18 +33,18 @@ x = [-MdataSize/2:MdataSize/2-1]; y = [-MdataSize/2:MdataSize/2-1];
 % I = Image;
 % I(MdataSize/5:4*MdataSize/5,MdataSize/5:4*MdataSize/5);
 % Z = Image-median(median(I));
-XAx(:,1) = Image(round(MdataSize/2),:)';
-YAx(:,1) = Image(:,round(MdataSize/2))';
-Diag1(:,1)=zeros(MdataSize,1);
-Diag2(:,1)=zeros(MdataSize,1);
-for pixval=1:MdataSize
-    Diag1(pixval,1)=Image(pixval,pixval);
-    Diag2(pixval,1)=Image(pixval,MdataSize+1-pixval);
-end
-Bckgrnd = [min(XAx),min(YAx),min(Diag1),min(Diag2)];
-Z = Image-median(Bckgrnd);
+% XAx(:,1) = Image(round(MdataSize/2),:)';
+% YAx(:,1) = Image(:,round(MdataSize/2))';
+% Diag1(:,1)=zeros(MdataSize,1);
+% Diag2(:,1)=zeros(MdataSize,1);
+% for pixval=1:MdataSize
+%     Diag1(pixval,1)=Image(pixval,pixval);
+%     Diag2(pixval,1)=Image(pixval,MdataSize+1-pixval);
+% end
+% Bckgrnd = [min(XAx),min(YAx),min(Diag1),min(Diag2)];
+Z = Image;%-median(Bckgrnd);
 % parameters are: [Amplitude, x0, sigmax, y0, sigmay, angel(in rad)]
-x0 = Guess; % [Amp,x1,sigmax,y1,sigmay,0]; %Inital guess parameters
+x0 = Guess; % [Amp,x1,sigmax,y1,sigmay,0,Bckgrnd]; %Inital guess parameters
 xs = x0; %centroid parameters
 %noise = 0; % noise in % of centroid peak value (x(1))
 InterpolationMethod = 'nearest'; % 'nearest','linear','spline','cubic'
@@ -67,7 +67,7 @@ if FitForOrientation == 0
     % define lower and upper bounds [Amp,xo,wx,yo,wy,fi]
 %     lb = [                                  0,-MdataSize/4,           1, -MdataSize/4,           1, -pi/4];
 %     ub = [realmax('double')-realmin('double'), MdataSize/4, MdataSize/2,  MdataSize/4, MdataSize/2,  pi/4];
-    [xfit,resnorm,residual,exitflag] = lsqcurvefit(@D2GaussFunctionRot,x0,xdata,Z,lb,ub);
+    [xfit,resnorm,residual,exitflag] = lsqcurvefit(@D2GaussFunctionRotConst,x0,xdata,Z,lb,ub);
 else
     x0 =x0(1:5);
     xin(6) = 0; 

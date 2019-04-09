@@ -1,4 +1,4 @@
-function plot_gaussintensity(ZProjImage, RefinedPeaks, NormFactor)
+function plot_gaussintensity(ZProjImage, RefinedPeaks)
 %   plot_tracks lets you view an image series with the rmsds of atomic columns 
 %   The rmsds are plotted on top of the Z-projection of an image series.
 %   The rmsds are represented by markers on a colour scale, with different 
@@ -24,7 +24,7 @@ function plot_gaussintensity(ZProjImage, RefinedPeaks, NormFactor)
     ax2 = axes;
     % Plot the rmsds on top of the data for every atom 
     % Integrated area of a 2D eliptical Gaussian is 2*pi*sigmax*sigmay*amplitude. Check your notebook for reasoning. 
-    scatter(ax2, RefinedPeaks(:,2), RefinedPeaks(:,4), [], RefinedPeaks(:,8), 'filled', 'LineWidth',1.5);
+    scatter(ax2, RefinedPeaks(:,2), RefinedPeaks(:,4), [], RefinedPeaks(:,7), 'filled', 'LineWidth',1.5);
     set(ax2, 'YDir', 'reverse'); % Ensure data plotted the right way up
     daspect([1 1 1]); % Ensure data plotted with correct aspect ratio
     xlim([0 sizeIM(2)]); % Ensure x axes of scatter plot and image are the same

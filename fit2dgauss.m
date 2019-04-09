@@ -82,10 +82,10 @@ sizeParams=size(xfit);
 GaussParams = zeros(sizeParams(1), sizeParams(2)+2); 
 GaussParams(:,1:sizeParams(2)) = xfit;
 Intensity = 0.9545*2*3.14159*GaussParams(1).*GaussParams(3).*GaussParams(5); % This is the formula for the area within 2 sigma of the Gaussian;
-GaussParams(:,sizeParams(2)+1)=Intensity;
+GaussParams(:,sizeParams(2))=Intensity;
 Res = sum(sum(abs(residual)));%
 % Res = abs(sum(sum(residual)));% 
-GaussParams(:,sizeParams(2)+2)=Res;
+GaussParams(:,sizeParams(2)+1)=Res;
 
 % Apply constraint. Amplitude must be greater than RoseCriterion*noise.
 if GaussParams(:,1) <= RoseCriterion*Noise

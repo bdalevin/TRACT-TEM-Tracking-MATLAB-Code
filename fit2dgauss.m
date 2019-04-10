@@ -85,9 +85,9 @@ Intensity = 0.9545*0.9545*2*3.14159*GaussParams(1).*GaussParams(3).*GaussParams(
 GaussParams(:,sizeParams(2))=Intensity;
 %Res = sum(sum(abs(residual)));%
 Res = abs(sum(sum(residual)));% 
-%QuickPoisson = sqrt(mean(mean(Z))*3.14159*4.*GaussParams(3).*GaussParams(5));
-QuickPoisson = Noise*3.14159*4.*GaussParams(3).*GaussParams(5);
-GaussParams(:,sizeParams(2)+1)=Res+QuickPoisson;
+QuickPoisson = sqrt(mean(mean(Z))*3.14159*4.*GaussParams(3).*GaussParams(5)); % Estimate Poisson Noise from mean counts per image.
+%QuickPoisson = Noise*3.14159*4.*GaussParams(3).*GaussParams(5);
+GaussParams(:,sizeParams(2)+1)=Res+QuickPoisson; % Reasonable to question whether error bars should be 1 sigma or 2 sigma given noise. 
 
 % Apply constraint. Amplitude must be greater than RoseCriterion*noise.
 if GaussParams(:,1) <= RoseCriterion*Noise

@@ -79,22 +79,23 @@ else
 end
 
 sizeParams=size(xfit);
-GaussParams = zeros(sizeParams(1), sizeParams(2)+2); 
+GaussParams = zeros(sizeParams(1), sizeParams(2)+3); 
 GaussParams(:,1:sizeParams(2)) = xfit;
 Intensity = 0.9545*0.9545*2*3.14159*GaussParams(1).*GaussParams(3).*GaussParams(5); % This is the formula for the area within 2 sigma of the Gaussian;
-GaussParams(:,sizeParams(2))=Intensity;
+GaussParams(:,sizeParams(2)+1)=Intensity;
 %Res = sum(sum(abs(residual)));%
 Res = abs(sum(sum(residual)));% 
-QuickPoisson = sqrt(mean(mean(Z))*3.14159*4.*GaussParams(3).*GaussParams(5)); % Estimate Poisson Noise from mean counts per image.
-%QuickPoisson = Noise*3.14159*4.*GaussParams(3).*GaussParams(5);
-GaussParams(:,sizeParams(2)+1)=Res+QuickPoisson; % Reasonable to question whether error bars should be 1 sigma or 2 sigma given noise. 
+QuickPoisson = sqrt(mean(mean(Z))*3.14159*4.*GaussParams(3).*GaussParams(5)); % Estimate Poisson noise within column by square root of mean number of counts in image.
+% QuickPoisson = Noise*3.14159*4.*GaussParams(3).*GaussParams(5);
+GaussParams(:,sizeParams(2)+2)=Res+QuickPoisson;
+GaussParams(:,sizeParams(2)+3)=Res+2*QuickPoisson;
 
 % Apply constraint. Amplitude must be greater than RoseCriterion*noise.
 if GaussParams(:,1) <= RoseCriterion*Noise
     GaussParams(1) = 0;
     GaussParams(2) = NaN;
     GaussParams(4) = NaN;
-    GaussParams(sizeParams(2))=0;
+    GaussParams(sizeParams(2)+1)=0;
 end
 
 % R2 = RSquare2D(Image, residual)

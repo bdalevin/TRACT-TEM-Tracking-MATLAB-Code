@@ -24,7 +24,7 @@ function plot_gaussintensity(ZProjImage, RefinedPeaks)
     ax2 = axes;
     % Plot the rmsds on top of the data for every atom 
     % Integrated area of a 2D eliptical Gaussian is 2*pi*sigmax*sigmay*amplitude. Check your notebook for reasoning. 
-    scatter(ax2, RefinedPeaks(:,2), RefinedPeaks(:,4), [], RefinedPeaks(:,7), 'filled', 'LineWidth',1.5);
+    scatter(ax2, RefinedPeaks(:,2), RefinedPeaks(:,4), [], RefinedPeaks(:,8), 'filled', 'LineWidth',1.5);
     set(ax2, 'YDir', 'reverse'); % Ensure data plotted the right way up
     daspect([1 1 1]); % Ensure data plotted with correct aspect ratio
     xlim([0 sizeIM(2)]); % Ensure x axes of scatter plot and image are the same
@@ -44,8 +44,15 @@ function plot_gaussintensity(ZProjImage, RefinedPeaks)
 
     cb2 = colorbar(ax2,'Position',[.78 .32 .0375 .4]); % Fix position of colourbar. 
     Ctitle = ylabel(cb2, 'Intensity (Integrated Counts)'); % Give colorbar a title
+    %caxis ([100 450]);
 
     % These positions are in units of fractions of the canvas size. The
     % numbers are: Left of colourbar, Bottom of colourbar, width, and height. 
+    
+    % Comment/Uncomment this to see the ID numbers next to the peaks (this
+    % will make diagnosis of bad peaks easier).
+    b = num2str(RefinedPeaks(:,11)); c = cellstr(b);
+    dx = 4; dy = 4;
+    text(RefinedPeaks(:,2)+dx, RefinedPeaks(:,4)+dy,c, 'Fontsize', 14, 'Color', 'y');
     
 end

@@ -75,7 +75,7 @@ end
 
 r = sz/2; % Defines radius of window
 % Separate IDs from coordinates
-ID = peaks(:,9);
+ID = peaks(:,11);
 mx = peaks(:,2:2:4);
 sig = peaks(:,3:2:5);
 [nr,nc]=size(im);
@@ -93,8 +93,8 @@ for i=1:2*r
     xl(i,:)=(1:2*r); 
 end
 yl=xl';
-GaussParams = zeros(nmx,9);
-pts= zeros(nmx,9);
+GaussParams = zeros(nmx,10);
+pts= zeros(nmx,11);
 mx2 = round(mx);
 %loop through all of the candidate positions
 for i=1:nmx
@@ -155,8 +155,8 @@ for i=1:nmx
     % Convert co-ordinates from those of the box to those of the whole image, and save. 
     GaussParams(i,2) = mx(i,1)+(GaussParams(i,2))+0.5; % You need to add the plus 0.5 here because MATLAB starts counting arrays from 1. 
     GaussParams(i,4) = mx(i,2)+(GaussParams(i,4))+0.5; % Without the plus 0.5, everything gets plotted one pixel up, and one pixel left of where it should be.   
-    pts(i,1:8)= GaussParams(i,1:8);
-    pts(i,9) = ID(i);
+    pts(i,1:10)= GaussParams(i,1:10);
+    pts(i,11) = ID(i);
     
     
 end

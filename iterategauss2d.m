@@ -92,8 +92,8 @@ for i=1:2*r
     xl(i,:)=(1:2*r); 
 end
 yl=xl';
-GaussParams = zeros(nmx,9);
-pts= zeros(nmx,9);
+GaussParams = zeros(nmx,10);
+pts= zeros(nmx,11);
 
 %loop through all of the candidate positions
 for i=1:nmx
@@ -121,8 +121,8 @@ for i=1:nmx
     GaussParams(i,4) = mx(i,2)+GaussParams(i,4)+0.5; % Without the plus 0.5, everything gets plotted one pixel up, and one pixel left of where it should be.
     % This is because middle of box has half-integer coordinates and you
     % want to add fit position to position of middle of box.
-    pts(i,1:8)= GaussParams(i,1:8);
-    pts(i,9) = ID(i);
+    pts(i,1:10)= GaussParams(i,1:10);
+    pts(i,11) = ID(i);
     
 end
 out=pts;

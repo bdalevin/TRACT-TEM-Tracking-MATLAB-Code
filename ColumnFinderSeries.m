@@ -71,7 +71,7 @@ if sizeAsize(2)==2
     
 else
     numim = Asize(3);
-    Data = zeros(1000,9,numim); 
+    Data = zeros(1000,11,numim); 
     
     for n = 1:numim
        Gauss = iterategauss2d2(Series(:,:,n),ProjPeaksGauss,GaussWindow, Guess, lb, ub, Noise, RoseCriterion);

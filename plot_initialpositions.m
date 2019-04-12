@@ -1,4 +1,4 @@
-function plot_lattice(Lattice, ZImage)
+function plot_initialpositions(Lattice, ZImage)
 % Plot the lattice on top of the image so that the user can inspect it and
 % make changes. 
 

@@ -85,8 +85,8 @@ RefinedPositions = ColumnID(Positions);
 % of the full width of the atomic column in pixels on the image. 
 % 6) Initial Guess for Angle of rotation - 0. 
 Guess1 = [            6,   0,  5,   0,  5,     0,  5];
-lb1 = [               0, -10,  1, -10,  1, -pi/4, -5];
-ub1 = [max(max(ZImage)),  10, 15,  10, 15,  pi/4, 10];
+lb1 = [               0, -10,  3, -10,  3, -pi/4, -5];
+ub1 = [max(max(ZImage)),  10, 12,  10, 12,  pi/4, 10];
 
 % Secondly, the user should enter a noise level and a "Rose Criterion" 
 % The noise level is used to determine the error bars on integrated intensity. 
@@ -125,11 +125,17 @@ RoseCriterion1 = 2;
 % % 2) RefinedProjPeaksGauss: A 10 column file. Same as above but includes
 % an extra column for frame number. 
 
-[ProjPeaksGauss, RefinedProjPeaksGauss] = ColumnFinderProjected(ZImage, RefinedPositions, 10, 10, 40, Guess1, lb1, ub1, Noise1, RoseCriterion1);
+[ProjPeaksGauss, RefinedProjPeaksGauss] = ColumnFinderProjected(ZImage, RefinedPositions, 10, 10, 50, Guess1, lb1, ub1, Noise1, RoseCriterion1);
 
 % %  These codes plot fitted positions and calculated intensities of the atomic columns on the Z-projected image
 plot_gausspositions(ZImage, RefinedProjPeaksGauss);
 % plot_gaussintensity(ZImage, RefinedProjPeaksGauss); 
+
+
+% This is an alternate version for finding peak positions that uses
+% centroid fitting. 
+[ProjPeaksCentrd, RefinedProjPeaksCentrd] = peakrefiner(ZImage, RefinedLattice, 10, 25);
+plot_centrdpositions(ZImage, RefinedProjPeaksCentrd);
 
 
 %% 4) Find Atomic Column Positions in the Image Time Series
@@ -142,7 +148,7 @@ plot_gausspositions(ZImage, RefinedProjPeaksGauss);
 % that the background level, and the amplitude of the Gaussians in
 % individual frames should be smaller than for summed image. 
 Guess2 = [                  0.6,   0,  5,   0,  5,     0,  0.5];
-lb2 = [                       0, -10,  1, -10,  1, -pi/4, -0.5];
+lb2 = [                       0, -10,  3, -10,  3, -pi/4, -0.5];
 ub2 = [max(max((Image(:,:,1)))),  10, 12,  10, 12,  pi/4,  1.5];
 
 % Noise level and Rose Criterion. See above for details. 
@@ -179,7 +185,12 @@ RoseCriterion2 = 3;
 % %    data point. 
 
 [PeaksGauss, RefinedPeaksGauss] = ColumnFinderSeries(Image, ProjPeaksGauss, 50, Guess2, lb2, ub2, Noise2, RoseCriterion2); 
-plot_gaussintensity(Image(:,:,10),PeaksGauss(:,:,10));
+% plot_gaussintensity(Image(:,:,3),PeaksGauss(:,:,3));
+
+% This is an alternate version for finding peak positions that uses
+% centroid fitting. 
+InitialPosnsCentrd = ProjPeaksCentrd(:,[1 2 5 3 4]); % This just rearranges data to a convenient format
+[PeaksCentrd, RefinedPeaksCentrd] = peakrefiner(Image, InitialPosnsCentrd(:,1:3), 10, 25);
 
 
 %% 5) Calculate root mean squared displacement (standard deviation) and make plot
@@ -188,19 +199,32 @@ plot_gaussintensity(Image(:,:,10),PeaksGauss(:,:,10));
 % First, the script track_gaussPeaks sorts the data so that peaks from 
 % different frames are grouped together based on their ID numbers. 
 TrackedPeaksGauss=track_gaussPeaks(RefinedPeaksGauss,10);
+TrackedPeaksCentrd=track_centrdPeaks(RefinedPeaksCentrd,10);
 
 % Next, the script track_gaussrmsd2 calculates the standard deviation of
 % the column positions in the image series, measured relative to the 
 % positions in the Z-projected image. 
-GaussRMSDs= track_gaussrmsd2(TrackedPeaksGauss, ProjPeaksGauss, Scale);
+GaussRMSDs= calculate_gauss_sds(TrackedPeaksGauss, ProjPeaksGauss, Scale);
 
 % Now we can plot the results. The script plot_rmsds overlays the image 
 % with a ring around each atomic column. The rings are plotted according 
 % to a colour map, with colour indicating standard deviation.
 figure(1);
 plot_rmsds(Image,GaussRMSDs);
-% The annoying thing about this script is that it really struggles with
+
+
+% Alternative for Centroid Fitting
+CentrdRMSDs = calculate_centrd_sds(TrackedPeaksCentrd, ProjPeaksCentrd, Scale);
+figure(2);
+plot_rmsds(Image,CentrdRMSDs);
+% The annoying thing about the plotting script is that it really struggles with
 % colourbar placement, so if you want to change the colorbar, you have to edit it manually in the code (file plot_rmsds.m). 
+
+
+
+
+
+%% 5.5) Detailed Check For Errors
 
 % The script plot_gausstracks draws lines that trace out the motion of 
 % atomic columns that the code has found over the top of the projected
@@ -209,14 +233,12 @@ plot_rmsds(Image,GaussRMSDs);
 % If you see errors like tracks extending to neighbouring atomic
 % columns, then you need to adjust the window fitting sizes in Section 5.
 % plot_tracks(Image,TrackedPeaks);
-figure(2); 
+figure(1); 
 plot_gausstracks(ZImage,TrackedPeaksGauss);
 
-
-%% 5.5) Detailed Check For Errors
 % If you spotted an error in the outputs above, you can use this script to
 % check each individual frame for errors. 
-
+figure(2);
 plot_gausspeaks(Image, PeaksGauss,100,100,100);
 
 % Inputs:
@@ -229,6 +251,9 @@ plot_gausspeaks(Image, PeaksGauss,100,100,100);
 % Press "p" for next image, 
 % Press "o" for previous image, 
 % Press "q" to quit. 
+
+% Alternative for centroid fits
+plot_centrdpeaks(Image, PeaksCentrd,100,100,100);
 
 %% 6) Calculate How Many Times There is a Jump Above a certain threshold, and estimate Activation Energy
 % Calculate jump frequency above user specified threshold in picometers

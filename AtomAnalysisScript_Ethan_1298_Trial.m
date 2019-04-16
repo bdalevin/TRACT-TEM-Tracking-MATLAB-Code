@@ -67,7 +67,7 @@ RefinedPositions = ColumnID(Positions);
 % coordinates for column positions, and the third will give the column ID
 % number
 
-% plot_lattice(RefinedLattice,ZImage); % Optional. Uncomment this code to plot initial column positions and check that they are reasonable
+% plot_initialpositions(RefinedLattice,ZImage); % Optional. Uncomment this code to plot initial column positions and check that they are reasonable
 
 %% 3) Find Atomic Column Positions in the Z-Projected Image
 % This section of the code fits elliptical Gaussians to columns in the Z-projected Image and calculates column positions and integrated intensities. 
@@ -84,6 +84,7 @@ RefinedPositions = ColumnID(Positions);
 % 3) and 5) Initial guess for Gaussian standard deviations: About a quarter
 % of the full width of the atomic column in pixels on the image. 
 % 6) Initial Guess for Angle of rotation - 0. 
+% 7) Initial Guess for background (average intensity in vacuum is a good guess)
 Guess1 = [            6,   0,  5,   0,  5,     0,  5];
 lb1 = [               0, -10,  3, -10,  3, -pi/4, -5];
 ub1 = [max(max(ZImage)),  10, 12,  10, 12,  pi/4, 10];
@@ -111,7 +112,7 @@ RoseCriterion1 = 2;
 % %   Noise, RoseCriterion: The noise level and threshold described above. 
 
 %                      OUTPUTS    
-% % 1) ProjPeaksGauss: A 9 column file. 
+% % 1) ProjPeaksGauss: A 11 column file. 
 % %    1st column: Fitted Amplitudes
 % %    2nd column: Fitted x coordinate
 % %    3rd column: Fitted x standard deviation
@@ -122,7 +123,7 @@ RoseCriterion1 = 2;
 % %    8th column: Calculated error on intensity
 % %    9th column: Column ID number
 
-% % 2) RefinedProjPeaksGauss: A 10 column file. Same as above but includes
+% % 2) RefinedProjPeaksGauss: A 12 column file. Same as above but includes
 % an extra column for frame number. 
 
 [ProjPeaksGauss, RefinedProjPeaksGauss] = ColumnFinderProjected(ZImage, RefinedPositions, 10, 10, 50, Guess1, lb1, ub1, Noise1, RoseCriterion1);
@@ -161,7 +162,7 @@ RoseCriterion2 = 3;
 
 %                      INPUTS
 % %   Image: An Image Series 
-% %   ProjPeaksGauss: 9 column file with coordinates in 2nd and 4th columns, and ID numbers in 9th column
+% %   ProjPeaksGauss: 11 column file with coordinates in 2nd and 4th columns, and ID numbers in 9th column
 % %   W, Window diameter for the 2D Gaussian fit. 
 % %   Guess, lb, ub: The initial guesses and upper and lower bounds for the Guassian fit as described above.
 % %   Noise, RoseCriterion: The noise level and threshold described above. 
@@ -179,7 +180,7 @@ RoseCriterion2 = 3;
 % %    8th column: Calculated error on intensity
 % %    9th column: Column ID number
 
-% % 2) RefinedProjPeaksGauss: A 10 column file. The 3D array PeaksGauss is
+% % 2) RefinedProjPeaksGauss: A 12 column file. The 3D array PeaksGauss is
 % %    reshaped so that data from all frames appear in a 2D array. The
 % %    additional 10th column contains the frame number associated with each
 % %    data point. 

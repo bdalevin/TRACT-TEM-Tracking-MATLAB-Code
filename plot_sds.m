@@ -1,4 +1,4 @@
-function plot_rmsds(series, rmsds)
+function plot_sds(series, rmsds)
 %   plot_tracks lets you view an image series with the rmsds of atomic columns 
 %   The rmsds are plotted on top of the Z-projection of an image series.
 %   The rmsds are represented by markers on a colour scale, with different 

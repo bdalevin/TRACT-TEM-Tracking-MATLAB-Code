@@ -67,7 +67,7 @@ RefinedPositions = ColumnID(Positions);
 % coordinates for column positions, and the third will give the column ID
 % number
 
-% plot_initialpositions(RefinedLattice,ZImage); % Optional. Uncomment this code to plot initial column positions and check that they are reasonable
+% plot_initialpositions(RefinedPositions,ZImage); % Optional. Uncomment this code to plot initial column positions and check that they are reasonable
 
 %% 3) Find Atomic Column Positions in the Z-Projected Image
 % This section of the code fits elliptical Gaussians to columns in the Z-projected Image and calculates column positions and integrated intensities. 
@@ -135,7 +135,7 @@ plot_gausspositions(ZImage, RefinedProjPeaksGauss);
 
 % This is an alternate version for finding peak positions that uses
 % centroid fitting. 
-[ProjPeaksCentrd, RefinedProjPeaksCentrd] = peakrefiner(ZImage, RefinedLattice, 10, 25);
+[ProjPeaksCentrd, RefinedProjPeaksCentrd] = peakrefiner(ZImage, RefinedPositions, 10, 25);
 plot_centrdpositions(ZImage, RefinedProjPeaksCentrd);
 
 
